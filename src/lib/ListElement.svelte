@@ -13,27 +13,27 @@
   onMount(() => {
 
       switch (item.container) {
-        case "common_chest":
+        case "commonChest":
           common_total.subscribe((e) => {
             chance = (item.rng / e) * 100;
           });
           break;
-        case "civil_chest":
+        case "civilChest":
           civil_total.subscribe((e) => {
             chance = (item.rng / e) * 100;
           });
           break;
-        case "food_chest":
+        case "foodChest":
           food_total.subscribe((e) => {
             chance = (item.rng / e) * 100;
           });
           break;
-        case "military_chest":
+        case "militaryChest":
           military_total.subscribe((e) => {
             chance = (item.rng / e) * 100;
           });
           break;
-        case "medic_chest":
+        case "medicChest":
           medic_total.subscribe((e) => {
             chance = (item.rng / e) * 100;
           });

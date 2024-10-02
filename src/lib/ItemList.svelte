@@ -19,12 +19,12 @@
   let container_filter: String;
 
   function add_item() {
-    let item = new_item("", 0, "common_chest", 1, 2);
+    let item = new_item("", 0, "commonChest", 1, 2);
     itemlist = [...itemlist, item];
     item_list.set(itemlist);
     show_list = itemlist;
     let total: number = 0;
-    for (let item of itemlist.filter((e) => e.container == "common_chest")) {
+    for (let item of itemlist.filter((e) => e.container == "commonChest")) {
       total += Number(item.rng);
     }
     common_total.set(total);
@@ -44,19 +44,19 @@
       total += Number(item.rng);
     }
     switch (container) {
-      case "common_chest":
+      case "commonChest":
         common_total.set(total);
         break;
-      case "civil_chest":
+      case "civilChest":
         civil_total.set(total);
         break;
-      case "food_chest":
+      case "foodChest":
         food_total.set(total);
         break;
-      case "military_chest":
+      case "militaryChest":
         military_total.set(total);
         break;
-      case "medic_chest":
+      case "medicChest":
         medic_total.set(total);
         break;
     }

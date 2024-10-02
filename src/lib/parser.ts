@@ -81,29 +81,29 @@ export function download(item_list: Item[]) {
 
     for (let item of item_list) {
         switch (item.container) {
-            case "common_chest":
+            case "commonChest":
                 common_chest.items.push(item);
                 break;
-            case "civil_chest":
+            case "civilChest":
                 civil_chest.items.push(item);
                 break;
-            case "food_chest":
+            case "foodChest":
                 food_chest.items.push(item);
                 break;
-            case "military_chest":
+            case "militaryChest":
                 military_chest.items.push(item);
                 break;
-            case "medic_chest":
+            case "medicChest":
                 medic_chest.items.push(item);
                 break;
         }
     }
 
-    let common_str = write_container("common_chest", common_chest);
-    let civil_str = write_container("civil_chest", civil_chest);
-    let food_str = write_container("food_chest", food_chest);
-    let military_str = write_container("military_chest", military_chest);
-    let medic_str = write_container("medic_chest", medic_chest);
+    let common_str = write_container("commonChest", common_chest);
+    let civil_str = write_container("civilChest", civil_chest);
+    let food_str = write_container("foodChest", food_chest);
+    let military_str = write_container("militaryChest", military_chest);
+    let medic_str = write_container("medicChest", medic_chest);
 
     let json_file = "{\n".concat(common_str, ",\n", civil_str, ",\n", food_str, ",\n", military_str, ",\n", medic_str, "\n}");
 
@@ -124,7 +124,7 @@ function write_container(name: String, container: Container) : string {
     builder.push("\"" + name + "\": {\n")
     builder.push("\"rng\": " + container.rng + ",\n")
     builder.push("\"slotRng\": "+ container.slotRng + ",\n")
-    builder.push("\"items\": [\n")
+    builder.push("\"itemsRng\": [\n")
     for(let i = 0; i < container.items.length; i++) {
         let item = container.items[i]
         builder.push("{\"item\": \"" + item.name.trim() + "\", ")
