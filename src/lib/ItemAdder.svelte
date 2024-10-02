@@ -48,7 +48,8 @@
         height: 10vh;
     }
     #text_processor {
-        z-index: 10;
+       display: flex;
+       flex-direction: column;
     }
     input {
         width: 10vw;

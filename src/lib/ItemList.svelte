@@ -38,7 +38,7 @@
     let filter = set.difference(new Set(list));
     itemlist = Array.from(filter.keys());
     item_list.set(itemlist);
-    show_list = itemlist;
+    show_list = Array.from(new Set(show_list).difference(new Set(list)));
     let total: number = 0;
     for (let item of itemlist.filter((e) => e.container == container)) {
       total += Number(item.rng);
@@ -122,7 +122,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 50vh;
+    height: 52vh;
+    overflow-x: hidden;
     overflow-y: scroll;
     width: 85vw;
     margin: 0 auto;
