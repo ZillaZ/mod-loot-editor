@@ -15,8 +15,8 @@
   let itemlist: Item[] = [];
   item_list.subscribe((e) => (itemlist = e));
   let show_list = itemlist;
-  let name_filter: String;
-  let container_filter: String;
+  let name_filter: string;
+  let container_filter: string;
 
   function add_item() {
     let item = new_item("", 0, "commonChest", 1, 2);
@@ -67,7 +67,7 @@
       show_list = itemlist;
       return;
     }
-    show_list = itemlist.filter((e) => e.container == container_filter);
+    show_list = itemlist.filter((e) => e.container.includes(container_filter));
   }
 
   function filter_by_name() {
@@ -75,7 +75,7 @@
       show_list = itemlist;
       return;
     }
-    show_list = itemlist.filter((e) => e.name == name_filter);
+    show_list = itemlist.filter((e) => e.name.includes(name_filter));
   }
 </script>
 
@@ -104,7 +104,7 @@
       <p>Max Stack</p>
       <p>Chance %</p>
     </div>
-    {#each show_list as item}
+    {#each show_list.reverse() as item}
       <div id="element">
         <ListElement {item} />
         <button on:click={() => remove_item(item.name, item.container)}
