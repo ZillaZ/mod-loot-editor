@@ -8,39 +8,37 @@
     medic_total,
   } from "./stores";
   export let item: Item;
-  let chance = 0;
-  import { onMount } from "svelte";
-  onMount(() => {
+  let total = 1;
+  $: chance = (item.rng / total) * 100;
 
-      switch (item.container) {
-        case "commonChest":
-          common_total.subscribe((e) => {
-            chance = (item.rng / e) * 100;
-          });
-          break;
-        case "civilChest":
-          civil_total.subscribe((e) => {
-            chance = (item.rng / e) * 100;
-          });
-          break;
-        case "foodChest":
-          food_total.subscribe((e) => {
-            chance = (item.rng / e) * 100;
-          });
-          break;
-        case "militaryChest":
-          military_total.subscribe((e) => {
-            chance = (item.rng / e) * 100;
-          });
-          break;
-        case "medicChest":
-          medic_total.subscribe((e) => {
-            chance = (item.rng / e) * 100;
-          });
-          break;
-        }
-        console.log(item.container)
-  })
+  switch (item.container) {
+    case "commonChest":
+      common_total.subscribe((e) => {
+        total = e
+      });
+      break;
+    case "civilChest":
+      civil_total.subscribe((e) => {
+        total = e
+      });
+      break;
+    case "foodChest":
+      food_total.subscribe((e) => {
+        total = e
+      });
+      break;
+    case "militaryChest":
+      military_total.subscribe((e) => {
+        total = e
+      });
+      break;
+    case "medicChest":
+      medic_total.subscribe((e) => {
+        total = e
+      });
+      break;
+  }
+  console.log(item.container);
 </script>
 
 <div id="list_element">
@@ -49,7 +47,7 @@
   <input bind:value={item.minStack} />
   <input bind:value={item.maxStack} />
   <input bind:value={item.rng} />
-  <p>{chance.toFixed(6)}</p>
+  <p> {chance}</p>  
 </div>
 
 <style>
