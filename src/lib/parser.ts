@@ -1,4 +1,4 @@
-import type { Item } from "./Item";
+import type { Item, Item2 } from "./Item";
 import { common_chest_rng, common_chest_slot_rng, civil_chest_rng, civil_chest_slot_rng, food_chest_rng, food_chest_slot_rng, military_chest_rng, military_chest_slot_rng, medic_chest_rng, medic_chest_slot_rng } from "./stores";
 
 let common_chestrng : number
@@ -26,75 +26,107 @@ medic_chest_rng.subscribe(e => medic_chest_slotrng = e)
 type Container = {
     rng: number,
     slotRng: number,
-    items: Item[]
+    itemsRng: Item2[]
 }
 
-export function parse(data: String, filter: string, minStack: number, maxStack: number, rng: number, container: String) : Item[] {
+export function parse(data: String, filter: string, minStack: number, maxStack: number, rng: number, container: String, file_type: string) : Item[] {
     let rtn : String[] = []
-    let lines = data.split("\n")
-    
-    for(let line of lines) {
-        if (line.includes(filter)) {
-            let aux = line.substring(6)
-            rtn.push(aux.replaceAll("<", "").replaceAll(">", ""))
+    if(file_type.includes("json")) {
+        let json : Document = JSON.parse(data.trim())
+        let commonSet = new Set(json.commonChest.itemsRng.map(e => item2_to_item(e, "commonChest")))
+        let civilSet = new Set(json.civilChest.itemsRng.map(e => item2_to_item(e, "civilChest")))
+        let foodSet = new Set(json.foodChest.itemsRng.map(e => item2_to_item(e, "foodChest")))
+        let militarySet = new Set(json.militaryChest.itemsRng.map(e => item2_to_item(e, "militaryChest")))
+        let medicSet = new Set(json.medicChest.itemsRng.map(e => item2_to_item(e, "medicChest")))
+        let union = commonSet.union(civilSet).union(foodSet).union(militarySet).union(medicSet)
+
+        return Array.from(union.keys())
+    }else{
+        let lines = data.split("\n")
+        
+        for(let line of lines) {
+            if (line.includes(filter)) {
+                let aux = line.substring(6)
+                rtn.push(aux.replaceAll("<", "").replaceAll(">", ""))
+            }
         }
+        alert(rtn.join("\n"))
+        return rtn.map(e => {
+            let aux : Item = {
+                name: e,
+                minStack,
+                maxStack,
+                rng,
+                container
+            };
+            return aux
+        })
     }
-    alert(rtn.join("\n"))
-    return rtn.map(e => {
-        let aux : Item = {
-            name: e,
-            minStack,
-            maxStack,
-            rng,
-            container
-        };
-        return aux
-    })
+}
+
+function item2_to_item(item: Item2, container: String) : Item {
+    return {
+        name: item.item,
+        container: container,
+        rng: item.rng,
+        minStack: item.minStack,
+        maxStack: item.maxStack
+    }
+}
+
+function item_to_item2(item: Item) : Item2 {
+    return {
+        item: item.name,
+        rng: item.rng,
+        minStack: item.minStack,
+        maxStack: item.maxStack
+    }
 }
 
 export function download(item_list: Item[]) {
     let common_chest: Container = {
         rng: common_chestrng,
         slotRng: common_chest_slotrng,
-        items: []
+        itemsRng: []
     };
     let civil_chest: Container = {
         rng: civil_chestrng,
         slotRng: civil_chest_slotrng,
-        items: []
+        itemsRng: []
     };
     let food_chest: Container = {
         rng: food_chestrng,
         slotRng: food_chest_slotrng,
-        items: []
+        itemsRng: []
     };
     let military_chest: Container = {
         rng: military_chestrng,
         slotRng: military_chest_slotrng,
-        items: []
+        itemsRng: []
     };
     let medic_chest: Container = {
         rng: medic_chestrng,
         slotRng: medic_chest_slotrng,
-        items: []
+        itemsRng: []
     };
 
-    for (let item of item_list) {
-        switch (item.container) {
+    for (let i of item_list) {
+        let item = item_to_item2(i)
+        switch (i.container) {
             case "commonChest":
-                common_chest.items.push(item);
+                common_chest.itemsRng.push(item);
                 break;
             case "civilChest":
-                civil_chest.items.push(item);
+                civil_chest.itemsRng.push(item);
                 break;
             case "foodChest":
-                food_chest.items.push(item);
+                food_chest.itemsRng.push(item);
                 break;
             case "militaryChest":
-                military_chest.items.push(item);
+                military_chest.itemsRng.push(item);
                 break;
             case "medicChest":
-                medic_chest.items.push(item);
+                medic_chest.itemsRng.push(item);
                 break;
         }
     }
@@ -125,13 +157,13 @@ function write_container(name: String, container: Container) : string {
     builder.push("\"rng\": " + container.rng + ",\n")
     builder.push("\"slotRng\": "+ container.slotRng + ",\n")
     builder.push("\"itemsRng\": [\n")
-    for(let i = 0; i < container.items.length; i++) {
-        let item = container.items[i]
-        builder.push("{\"item\": \"" + item.name.trim() + "\", ")
+    for(let i = 0; i < container.itemsRng.length; i++) {
+        let item = container.itemsRng[i]
+        builder.push("{\"item\": \"" + item.item.trim() + "\", ")
         builder.push("\"minStack\": " + item.minStack + ", ")
         builder.push("\"maxStack\": " + item.maxStack + ", ")
         builder.push("\"rng\":" + item.rng)
-        if(i == container.items.length - 1) {
+        if(i == container.itemsRng.length - 1) {
             builder.push("}\n")
         }else{
             builder.push("},\n")
@@ -140,4 +172,12 @@ function write_container(name: String, container: Container) : string {
     builder.push("]\n")
     builder.push("}")
     return builder.join("")
+}
+
+export type Document = {
+    commonChest: Container,
+    civilChest: Container,
+    foodChest: Container,
+    militaryChest: Container,
+    medicChest: Container
 }
