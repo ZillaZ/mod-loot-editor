@@ -1,4 +1,6 @@
 <script lang="ts">
+    import pkg from 'lodash';
+    const {uniqWith, isEqual} = pkg;
     import {type Item} from "$lib/Item";
     import { item_list } from "./stores";
     import { parse } from "./parser";
@@ -23,16 +25,12 @@
     }
     function join_parsed_data(items: Item[]) {
         let set = new Set(itemlist)
-        let subset = new Set(itemlist.map(e => e.name.concat(e.container.trim())))
-        let arr = new Set()
-        for(let i = 0; i < items.length; i++) {
-            if(subset.has(items[i].name.concat(items[i].container.trim()))) continue;
-            arr.add(i)
-        }
-        let other = new Set(items.filter((_, index) => arr.has(index)))
+        let other = new Set(items)
         let union = set.union(other)
+        let aux = Array.from(union)
+        let final = uniqWith(aux, isEqual)
         if(flag.includes("json") || flag.includes("text")) {
-            item_list.set(Array.from(union.keys()))
+            item_list.set(final)
         }else{
             alert("Invalid file format")
         }

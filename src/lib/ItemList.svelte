@@ -1,9 +1,12 @@
 <script lang="ts">
+  import pkg from 'lodash';
+  const {uniqWith, isEqual} = pkg;
   import { type Item } from "./Item";
   import { new_item } from "./Item";
   import ItemAdder from "./ItemAdder.svelte";
   import ListElement from "./ListElement.svelte";
   import { download } from "./parser";
+  
   import {
     item_list,
     common_total,
@@ -21,6 +24,7 @@
   function add_item() {
     let item = new_item("", 0, "commonChest", 1, 2);
     itemlist = [...itemlist, item];
+    itemlist = uniqWith(itemlist, isEqual)
     item_list.set(itemlist);
     show_list = itemlist;
     let total: number = 0;
@@ -76,6 +80,9 @@
       return;
     }
     show_list = itemlist.filter((e) => e.name.includes(name_filter));
+  }
+  function update_item_percentages() {
+
   }
 </script>
 
