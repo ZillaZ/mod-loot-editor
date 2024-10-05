@@ -22,7 +22,7 @@
   let container_filter: string;
 
   function add_item() {
-    let item = new_item("", 0, "commonChest", 1, 2);
+    let item = new_item("", 1, "commonChest", 1, 2);
     itemlist = [...itemlist, item];
     itemlist = uniqWith(itemlist, isEqual)
     item_list.set(itemlist);
@@ -80,9 +80,6 @@
       return;
     }
     show_list = itemlist.filter((e) => e.name.includes(name_filter));
-  }
-  function update_item_percentages() {
-
   }
 </script>
 
